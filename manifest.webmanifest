@@ -1,0 +1,16 @@
+{
+  "id": "./",
+  "name": "Webb: Where Is Everyone?",
+  "short_name": "Where Is Everyone?",
+  "description": "Offline Webb Building instructional schedule lookup.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f5f1",
+  "theme_color": "#f6f5f1",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
