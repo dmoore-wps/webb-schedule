@@ -7,29 +7,47 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Where Is Everyone?">
-<meta name="description" content="Offline Webb Building instructional schedule lookup.">
+<meta name="description" content="Offline Webb and EW instructional schedule lookup.">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-<title>Webb: Where Is Everyone?</title>
+<title>Where Is Everyone?</title>
 <style>
 :root{color-scheme:light dark;--bg:#f6f5f1;--fg:#1d2330;--mut:#5d6575;--card:#fff;--line:#d9d9d2;--acc:#1f4fd8;--arr:#3b82f6;--cir:#3fb5b5;--win:#ffe94a;--ela:#cfc9e8;--mat:#a9c5ef;--ufl:#ffe2a0;--ua:#ef7a70;--trv:#dcdce6;--rec:#8de5e9;--lun:#9cdda0;--sci:#ffc078;--oth:#dedede;--rea:#b9d6b0;--ext:#c0a5e5}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171f;--fg:#eceff5;--mut:#9aa3b5;--card:#1d222d;--line:#323a4a;--acc:#7fa2ff;--arr:#315c91;--cir:#286d70;--win:#8d7b1e;--ela:#514c6d;--mat:#3e5b82;--ufl:#80632c;--ua:#87443e;--trv:#454858;--rec:#28686d;--lun:#326b3a;--sci:#815329;--oth:#454545;--rea:#456343;--ext:#604a7e}}
-*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 Georgia,"Times New Roman",serif;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}main{max-width:680px;margin:0 auto;padding:18px 16px 28px}h1{font-size:1.35rem;margin:4px 0 2px}.sub{color:var(--mut);font:14px system-ui,sans-serif;margin-bottom:16px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}.chips button,.tm button{font:600 14px system-ui,sans-serif;padding:9px 13px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.chips button[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#fff}button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}.now{border-radius:14px;padding:18px;border:1px solid rgba(0,0,0,.12);color:#111;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.06)}.now small{font:14px system-ui,sans-serif}.now .what{font:700 clamp(1.65rem,7vw,2.1rem)/1.12 system-ui,sans-serif;margin:7px 0}.now .when{font:600 15px system-ui,sans-serif}.note{margin-top:10px;font:13px/1.4 system-ui,sans-serif;background:rgba(255,255,255,.65);padding:8px 10px;border-radius:8px;color:#20242b}.next{font:14px system-ui,sans-serif;color:var(--mut);margin:0 0 16px}.next b{color:var(--fg)}.tm{display:flex;gap:9px;align-items:center;font:14px system-ui,sans-serif;color:var(--mut);margin:16px 0;flex-wrap:wrap}.tm input{font:15px system-ui,sans-serif;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg)}.tm button{border-radius:8px;padding:7px 10px}ol{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}li{display:flex;gap:11px;padding:10px 12px;border-bottom:1px solid var(--line);font:14px/1.35 system-ui,sans-serif;align-items:center;min-height:42px}li:last-child{border:0}li i{width:9px;align-self:stretch;border-radius:3px;flex:none}li .t{width:100px;flex:none;color:var(--mut);font-variant-numeric:tabular-nums}li.cur{background:color-mix(in srgb,var(--acc) 13%,var(--card));font-weight:700}li.past{opacity:.48}.foot{font:12px/1.45 system-ui,sans-serif;color:var(--mut);margin-top:15px}.status{font:12px system-ui,sans-serif;color:var(--mut);margin-top:12px}.hidden{display:none!important}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 Georgia,"Times New Roman",serif;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+main{max-width:720px;margin:0 auto;padding:18px 16px 28px}h1{font-size:1.35rem;margin:4px 0 2px}.sub{color:var(--mut);font:14px system-ui,sans-serif;margin-bottom:14px}
+.section-label{font:700 12px system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:14px 0 7px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}.chips button,.tm button{font:600 14px system-ui,sans-serif;padding:9px 13px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}.chips button[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#fff}
+button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.now{border-radius:14px;padding:16px;border:1px solid rgba(0,0,0,.12);color:#111;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.06)}.now small{font:14px system-ui,sans-serif}.now .what{font:700 clamp(1.35rem,6vw,1.9rem)/1.12 system-ui,sans-serif;margin:7px 0}.now .when{font:600 14px system-ui,sans-serif}.note{margin-top:9px;font:13px/1.4 system-ui,sans-serif;background:rgba(255,255,255,.65);padding:8px 10px;border-radius:8px;color:#20242b}
+.next{font:14px system-ui,sans-serif;color:var(--mut);margin:0 0 13px}.next b{color:var(--fg)}
+.tm{display:flex;gap:9px;align-items:center;font:14px system-ui,sans-serif;color:var(--mut);margin:16px 0;flex-wrap:wrap}.tm input{font:15px system-ui,sans-serif;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg)}.tm button{border-radius:8px;padding:7px 10px}
+ol{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}li{display:flex;gap:11px;padding:10px 12px;border-bottom:1px solid var(--line);font:14px/1.35 system-ui,sans-serif;align-items:center;min-height:42px}li:last-child{border:0}li i{width:9px;align-self:stretch;border-radius:3px;flex:none}li .t{width:104px;flex:none;color:var(--mut);font-variant-numeric:tabular-nums}li.cur{background:color-mix(in srgb,var(--acc) 13%,var(--card));font-weight:700}li.past{opacity:.48}
+.groups{display:grid;grid-template-columns:1fr;gap:12px}.group-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--card);min-width:0}.group-card h2{font:700 16px system-ui,sans-serif;margin:0 0 3px}.group-card .teacher{font:13px system-ui,sans-serif;color:var(--mut);margin-bottom:10px}.group-card .now{margin-bottom:8px}.group-card ol{border-radius:9px}.group-card li{padding:8px 9px;font-size:13px}.group-card li .t{width:96px}
+.foot{font:12px/1.45 system-ui,sans-serif;color:var(--mut);margin-top:15px}.status{font:12px system-ui,sans-serif;color:var(--mut);margin-top:12px}.hidden{display:none!important}
+@media(min-width:620px){.groups{grid-template-columns:repeat(2,minmax(0,1fr))}.group-card:last-child:nth-child(odd){grid-column:1/-1}}
 </style>
 </head>
 <body><main>
 <h1>Where is everyone?</h1>
 <div class="sub" id="clock" aria-live="polite"></div>
+
+<div class="section-label">Building</div>
+<div class="chips" id="buildings" role="group" aria-label="Choose a building"></div>
+<div class="section-label">Grade</div>
 <div class="chips" id="chips" role="group" aria-label="Choose a grade"></div>
+
 <div id="out" aria-live="polite"></div>
 <div class="tm"><label for="ot">Check another time:</label><input type="time" id="ot"><button id="rs" type="button">Use live time</button></div>
-<div class="foot">Source: Webb Building Schedule 2026–2027, Instructional Blocks. Weekday schedule only; holidays, closures, and special-day changes are not included. Dismissal is displayed as a five-minute marker because the source lists its start time but not its duration. Science/S.S./SEL day labels are shown as stated in the source.</div>
+<div class="foot" id="sourceNote"></div>
 <div class="status" id="offlineStatus"></div>
 </main>
 <script>
 'use strict';
-const DATA={
+
+/* Webb schedule: preserved from the original application. */
+const WEBB={
 'Pre-K AM':[
 ['9:05','9:15','AM Arrival','a'],['9:15','9:30','Table Tops','o'],['9:30','10:00','Unified Arts','u'],['10:00','10:20','Preschool Recess (Levine / Barresi)','r'],['10:25','11:00','Circle','c'],['11:00','11:30','Centers / Snack','o']
 ],
@@ -58,30 +76,117 @@ const DATA={
 ['8:35','8:55','Arrival','a'],['8:55','9:20','Morning Circle','c'],['9:20','9:50','WIN #1','w'],['9:50','10:50','Carlson in ELA / Westbrook in Math','x','If Carlson’s class starts with ELA, SJ can push into Westbrook’s for support Monday–Thursday.'],['10:50','10:55','Travel','t'],['10:55','11:40','Unified Arts','u'],['11:40','11:45','Travel','t'],['11:45','12:15','Carlson in ELA / Westbrook in Math','x'],['12:15','1:20','Westbrook in ELA / Carlson in Math','m'],['1:20','1:25','Travel','t'],['1:25','1:47','Lunch','l'],['1:47','2:10','Recess','r'],['2:10','2:15','Travel','t'],['2:15','2:55','S.S. / Science switches','s'],['2:55','3:25','WIN #2','w'],['3:25','3:30','Pack Up','t'],['3:30','3:35','Dismissal','a']
 ]
 };
-const COLORS={a:'--arr',c:'--cir',w:'--win',e:'--ela',m:'--mat',f:'--ufl',u:'--ua',t:'--trv',r:'--rec',l:'--lun',s:'--sci',o:'--oth',d:'--rea',x:'--ext'};
+
+/* EW schedule. K-4 are the individual grade columns.
+   Grade 5/6 are displayed as three teacher/group schedules, with the
+   rotation assignments transcribed from the supplied EW schedule. */
+const EW={
+'Kindergarten':{rows:[
+['8:10','8:30','Arrival / Morning Work / Lunch Count','a'],
+['8:30','8:50','Circle / Calendar / Message of the Day','c'],
+['8:50','9:30','Content Integrated Play (SEL / SS / Science / Health)','x'],
+['9:30','10:10','WIN / EL (first 15 min is TSG reading)','w'],
+['10:10','10:40','ELA TSG','e'],
+['10:40','10:50','Phonological Awareness','x'],
+['10:50','11:20','UFLI','f'],
+['11:20','11:50','BW Shared Reading','d'],
+['11:50','12:35','Recess / Lunch','l'],
+['12:35','1:10','Math','m'],
+['1:10','1:20','Math TSG','m'],
+['1:20','2:05','Unified Arts','u'],
+['2:05','2:15','Math TSG','m'],
+['2:15','2:45','BW ELA','e'],
+['2:45','3:00','Pack Up / Closing Circle','t'],
+['3:00','3:05','Dismissal','a']
+]},
+'Grade 1':{rows:[
+['8:30','8:45','Circle / Calendar','c'],['8:45','9:15','UFLI','f'],['9:15','9:55','BW Shared Reading','d'],['9:55','10:10','ELA TSG','e'],['10:10','10:50','WIN / EL (first 15 min is TSG reading)','w'],['10:50','11:25','BW ELA','e'],['11:25','12:10','Recess / Lunch','l'],['12:10','12:30','Phonemic Awareness','x'],['12:30','1:15','Unified Arts','u'],['1:15','2:10','Math','m'],['2:10','2:25','Math TSG','m'],['2:25','2:55','Science / SS / Health / SEL','s'],['3:00','3:05','Dismissal','a']
+]},
+'Grade 2':{rows:[
+['8:30','8:40','Morning Meeting','c'],['8:40','9:10','UFLI / Phonemic Awareness','f'],['9:10','9:50','BW ELA','e'],['9:50','10:30','BW Shared Reading','d'],['10:30','11:00','Science / SS / Health / SEL','s'],['11:00','11:45','Recess / Lunch','l'],['11:45','12:00','ELA TSG','e'],['12:00','12:40','WIN / EL (first 15 min is TSG reading)','w'],['12:40','1:55','ELA TSG continued','e'],['12:55','1:55','Math','m'],['1:55','2:10','Math TSG','m'],['2:10','2:55','Unified Arts','u'],['3:00','3:05','Dismissal','a']
+]},
+'Grade 3':{rows:[
+['8:30','8:40','Morning Meeting / Circle','c'],['8:40','9:15','BW Shared Reading','d'],['9:15','9:50','BW ELA','e'],['9:50','10:50','Math','m'],['11:05','11:45','WIN / EL (first 15 min is TSG reading)','w'],['12:30','12:40','Transition / Bathroom','t'],['12:40','1:25','Recess / Lunch','l'],['1:25','1:45','UFLI / Cursive','f'],['1:45','2:25','Science / SS / Health / SEL','s'],['2:25','2:55','ELA TSG','e'],['3:00','3:05','Dismissal','a']
+]},
+'Grade 4':{rows:[
+['8:10','8:30','Arrival / Morning Work / Lunch Count','a'],['8:30','8:45','Circle','c'],['8:45','9:45','Math','m'],['9:45','10:00','Math TSG','m'],['10:00','10:20','Word Work','x'],['10:20','11:00','BW Shared Reading','d'],['11:00','11:45','Unified Arts','u'],['11:45','12:10','BW ELA','e'],['12:15','1:00','Recess / Lunch','l'],['1:05','1:20','BW ELA continued','e'],['1:25','2:05','WIN / EL (first 15 min is TSG reading)','w'],['2:05','2:20','ELA TSG','e'],['2:20','2:55','Science / SS / SEL','s'],['3:00','3:05','Dismissal','a']
+]},
+'Grade 5':{groups:[
+{title:'ELA',teacher:'Woods',rows:[['8:10','8:30','Arrival / Morning Work / Lunch Count','a'],['8:30','8:45','Circle / SEL','c'],['8:45','10:05','Switch 1 – ELA','e'],['10:05','10:15','Switch 2 – Part 1: S.S. / Science','s'],['10:15','11:00','Unified Arts','u'],['11:00','12:10','Switch 2 – Part 2: S.S. / Science','s'],['12:10','1:05','Switch 3 – Part 1: Math','m'],['1:05','1:50','Recess / Lunch','l'],['1:50','2:15','Switch 3 – Part 2: Math','m'],['2:15','2:55','WIN / EL (first 15 min is TSG reading)','w'],['3:00','3:05','Dismissal','a']]},
+{title:'Math',teacher:'Kardys',rows:[['8:10','8:30','Arrival / Morning Work / Lunch Count','a'],['8:30','8:45','Circle / SEL','c'],['8:45','10:05','Switch 1 – Math','m'],['10:05','10:15','Switch 2 – Part 1: ELA','e'],['10:15','11:00','Unified Arts','u'],['11:00','12:10','Switch 2 – Part 2: ELA','e'],['12:10','1:05','Switch 3 – Part 1: S.S. / Science','s'],['1:05','1:50','Recess / Lunch','l'],['1:50','2:15','Switch 3 – Part 2: S.S. / Science','s'],['2:15','2:55','WIN / EL (first 15 min is TSG reading)','w'],['3:00','3:05','Dismissal','a']]},
+{title:'Science / S.S. / Health',teacher:'Kinney',rows:[['8:10','8:30','Arrival / Morning Work / Lunch Count','a'],['8:30','8:45','Circle / SEL','c'],['8:45','10:05','Switch 1 – S.S. / Science (LTS/Casey)','s'],['10:05','10:15','Switch 2 – Part 1: Math (LTS/Casey)','m'],['10:15','11:00','Unified Arts','u'],['11:00','12:10','Switch 2 – Part 2: Math (LTS/Casey)','m'],['12:10','1:05','Switch 3 – Part 1: ELA (LTS/Casey)','e'],['1:05','1:50','Recess / Lunch','l'],['1:50','2:15','Switch 3 – Part 2: ELA (LTS/Casey)','e'],['2:15','2:55','WIN / EL (first 15 min is TSG reading)','w'],['3:00','3:05','Dismissal','a']]}
+]},
+'Grade 6':{groups:[
+{title:'ELA',teacher:'Carmon',rows:[['8:10','8:30','Arrival / Morning Work / Lunch Count','a'],['8:35','9:20','WIN / EL (first 15 min is TSG reading)','w'],['9:25','10:10','Unified Arts','u'],['10:10','11:30','Switch 1 – Content','s'],['11:30','12:50','Switch 2 – Math','m'],['12:50','1:30','Switch 3 – Part I (homeroom): ELA','e'],['1:30','2:15','Recess / Lunch','l'],['2:15','2:55','Switch 3 – Part II','ext'],['2:45','2:55','Circle','c'],['3:00','3:05','Dismissal','a']]},
+{title:'Math',teacher:'Ali Reynolds',rows:[['8:10','8:30','Arrival / Morning Work / Lunch Count','a'],['8:35','9:20','WIN / EL (first 15 min is TSG reading)','w'],['9:25','10:10','Unified Arts','u'],['10:10','11:30','Switch 1 – ELA','e'],['11:30','12:50','Switch 2 – Content','s'],['12:50','1:30','Switch 3 – Part I (homeroom): Math','m'],['1:30','2:15','Recess / Lunch','l'],['2:15','2:55','Switch 3 – Part II','ext'],['2:45','2:55','Circle','c'],['3:00','3:05','Dismissal','a']]},
+{title:'Science / S.S. / Health & Word Work',teacher:'Emmanuel',rows:[['8:10','8:30','Arrival / Morning Work / Lunch Count','a'],['8:35','9:20','WIN / EL (first 15 min is TSG reading)','w'],['9:25','10:10','Unified Arts','u'],['10:10','11:30','Switch 1 – Math','m'],['11:30','12:50','Switch 2 – ELA','e'],['12:50','1:30','Switch 3 – Part I (homeroom): Content','s'],['1:30','2:15','Recess / Lunch','l'],['2:15','2:55','Switch 3 – Part II','ext'],['2:45','2:55','Circle','c'],['3:00','3:05','Dismissal','a']]}
+]}
+};
+
+const COLORS={a:'--arr',c:'--cir',w:'--win',e:'--ela',m:'--mat',f:'--ufl',u:'--ua',t:'--trv',r:'--rec',l:'--lun',s:'--sci',o:'--oth',d:'--rea',x:'--ext',ext:'--ext'};
+const DATA={Webb:WEBB,EW:Object.fromEntries(Object.entries(EW).map(([g,v])=>[g,v.rows||v.groups]))};
 const toMinutes=v=>{if(!v)return null;let [h,m]=v.split(':').map(Number);if(h<8)h+=12;return h*60+m};
 const formatTime=n=>{if(n==null)return '';let h=Math.floor(n/60),m=n%60;h=h%12||12;return h+':'+String(m).padStart(2,'0')};
-const S={};for(const [grade,rows] of Object.entries(DATA)){S[grade]=rows.map(([a,b,name,color,note])=>({a:toMinutes(a),b:toMinutes(b),name,color,note:note||''})).sort((x,y)=>x.a-y.a)}
-const $=id=>document.getElementById(id);let grade=null,override=null;
-try{grade=localStorage.getItem('webbGrade')}catch(e){}
-const grades=Object.keys(S);if(!S[grade])grade='Kindergarten';
-const displayGrade=g=>g==='Kindergarten'?'Kindergarten':g;
-$('chips').innerHTML=grades.map(g=>`<button type="button" data-g="${g}" aria-pressed="false">${displayGrade(g)}</button>`).join('');
-$('chips').addEventListener('click',e=>{const b=e.target.closest('button[data-g]');if(!b)return;grade=b.dataset.g;try{localStorage.setItem('webbGrade',grade)}catch(x){}render()});
+const normalize=rows=>rows.map(([a,b,name,color,note])=>({a:toMinutes(a),b:toMinutes(b),name,color,note:note||''})).sort((x,y)=>x.a-y.a);
+const S={Webb:{},EW:{}};
+for(const [g,rows] of Object.entries(WEBB))S.Webb[g]=normalize(rows);
+for(const [g,entry] of Object.entries(EW))S.EW[g]=entry.rows?normalize(entry.rows):{groups:entry.groups.map(gr=>({...gr,rows:normalize(gr.rows)}))};
+
+const $=id=>document.getElementById(id);
+let building='Webb',grade=null,override=null;
+try{building=localStorage.getItem('wieBuilding')||'Webb'}catch(e){}
+if(!S[building])building='Webb';
+function getGrades(){return Object.keys(S[building])}
+try{grade=localStorage.getItem('wieGrade_'+building)}catch(e){}
+if(!getGrades().includes(grade))grade=building==='Webb'?'Kindergarten':'Kindergarten';
+
+function makeButtons(container,items,selected,onSelect){
+ container.innerHTML=items.map(item=>`<button type="button" data-value="${item}" aria-pressed="${String(item===selected)}">${item}</button>`).join('');
+ container.onclick=e=>{const b=e.target.closest('button[data-value]');if(b)onSelect(b.dataset.value)};
+}
+function setBuilding(value){
+ building=value;grade=getGrades()[0];
+ try{localStorage.setItem('wieBuilding',building);localStorage.setItem('wieGrade_'+building,grade)}catch(e){}
+ render();
+}
+function setGrade(value){
+ grade=value;
+ try{localStorage.setItem('wieGrade_'+building,grade)}catch(e){}
+ render();
+}
+function renderSchedule(rows,displayName,mins,weekend,compact=false){
+ const currentItems=rows.filter(x=>mins>=x.a&&(x.b==null||mins<x.b));
+ const current=currentItems[0]||null,next=rows.find(x=>x.a>mins);
+ let html='';
+ if(weekend)html=`<div class="now" style="background:var(--card);color:var(--fg)"><div class="what">No weekday schedule</div><div class="when">It’s the weekend.</div></div>`;
+ else if(current){
+  html+=`<div class="now" style="background:var(${COLORS[current.color]||'--oth'});"><small>${displayName} is in</small><div class="what">${currentItems.map(x=>x.name).join(' + ')}</div><div class="when">${currentItems.map(x=>formatTime(x.a)+'–'+(x.b?formatTime(x.b):'Dismissal')).join(' · ')}</div>${currentItems.map(x=>x.note?`<div class="note">${x.note}</div>`:'').join('')}</div>`;
+ }else{
+  const end=rows.reduce((m,x)=>Math.max(m,x.b||0),0);
+  const msg=mins<Math.min(...rows.map(x=>x.a))?'Not started yet':mins>=end?'School day is over':'Between scheduled blocks';
+  html+=`<div class="now" style="background:var(--card);color:var(--fg)"><div class="what">${msg}</div></div>`;
+ }
+ if(!weekend&&next)html+=`<p class="next">Next: <b>${next.name}</b> at ${formatTime(next.a)}</p>`;
+ html+='<ol>'+rows.map(x=>{const active=!weekend&&currentItems.includes(x),past=!weekend&&x.b!=null&&x.b<=mins;return `<li class="${active?'cur':past?'past':''}"><i style="background:var(${COLORS[x.color]||'--oth'})"></i><span class="t">${formatTime(x.a)}–${x.b?formatTime(x.b):'Dismissal'}</span><span>${x.name}</span></li>`}).join('')+'</ol>';
+ return html;
+}
+function render(){
+ const now=new Date(),mins=override?(()=>{const [h,m]=override.split(':').map(Number);return h*60+m})():now.getHours()*60+now.getMinutes(),day=now.getDay(),weekend=!override&&(day===0||day===6);
+ $('clock').textContent=(override?'Checking ':'')+formatTime(mins)+(mins>=720?' PM':' AM')+(override?'':' · '+now.toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'}));
+ makeButtons($('buildings'),['Webb','EW'],building,setBuilding);
+ makeButtons($('chips'),getGrades(),grade,setGrade);
+ const item=S[building][grade];
+ if(Array.isArray(item)){
+  $('out').innerHTML=renderSchedule(item,grade,mins,weekend);
+ }else{
+  $('out').innerHTML='<div class="groups">'+item.groups.map(group=>`<section class="group-card"><h2>${grade} · ${group.title}</h2><div class="teacher">${group.teacher}</div>${renderSchedule(group.rows,group.teacher,mins,weekend,true)}</section>`).join('')+'</div>';
+ }
+ $('sourceNote').textContent=building==='Webb'
+ ?'Source: Webb Building Schedule 2026–2027, Instructional Blocks. Weekday schedule only; holidays, closures, and special-day changes are not included. Webb schedule retained from the original app.'
+ :'Source: EW Grade Level Schedules 2026–2027 and the additional Grade 4 column supplied in chat. Weekday schedule only; holidays, closures, and special-day changes are not included. Grade 5/6 cards show the three teacher groups and their rotation assignments from the source; unspecified periods are not inferred. The Grade 2 source lists ELA TSG continued (12:40–1:55) and Math (12:55–1:55) as overlapping; both are shown as written.';
+}
 $('ot').addEventListener('change',e=>{override=e.target.value||null;render()});
 $('rs').addEventListener('click',()=>{override=null;$('ot').value='';render()});
-function render(){
- const now=new Date(),mins=override?toMinutes(override):now.getHours()*60+now.getMinutes(),day=now.getDay();
- $('clock').textContent=(override?'Checking ':'')+formatTime(mins)+(mins>=720?' PM':' AM')+(override?'':' · '+now.toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'}));
- $('chips').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.g===grade)));
- const rows=S[grade],currentItems=rows.filter(x=>mins>=x.a&&(x.b==null||mins<x.b)),current=currentItems[0]||null,next=rows.find(x=>x.a>mins),weekend=!override&&(day===0||day===6);let html='';
- if(weekend){html='<div class="now" style="background:var(--card);color:var(--fg)"><div class="what">No weekday schedule</div><div class="when">It’s the weekend.</div></div>'}
- else if(current){const currentNames=currentItems.map(x=>x.name),endTimes=currentItems.map(x=>x.b).filter(Boolean),commonEnd=endTimes.length?Math.min(...endTimes):null,left=commonEnd==null?null:commonEnd-mins;html+=`<div class="now" style="background:var(${COLORS[current.color]});"><small>${grade} is in</small><div class="what">${currentNames.join(' + ')}</div><div class="when">${currentItems.map(x=>formatTime(x.a)+'–'+(x.b?formatTime(x.b):'Dismissal')).join(' · ')}${left!=null&&currentItems.length===1?' · '+left+' min left':''}</div>${currentItems.map(x=>x.note?`<div class="note">${x.note}</div>`:'').join('')}${currentItems.some(x=>x.name.includes('Science / S.S. / SEL')||x.name.includes('Science / S.S. / Health')||x.name.includes('S.S. / Science'))?'<div class="note">Monday: SEL · Tuesday: Sci/SS · Thursday: Science/SS. Wednesday and Friday are not specified in the source.</div>':''}</div>`}
- else{const dismissal=rows.find(x=>x.name==='Dismissal'),dayEnd=dismissal?dismissal.b:15*60+35;const msg=mins<rows[0].a?'Not started yet':mins>=dayEnd?'School day is over':'Between scheduled blocks';html+=`<div class="now" style="background:var(--card);color:var(--fg)"><div class="what">${msg}</div></div>`}
- if(!weekend&&next)html+=`<p class="next">Next: <b>${next.name}</b> at ${formatTime(next.a)}</p>`;
- html+='<ol>'+rows.map(x=>{const active=!weekend&&currentItems.includes(x),past=!weekend&&x.b!=null&&x.b<=mins;return `<li class="${active?'cur':past?'past':''}"><i style="background:var(${COLORS[x.color]})"></i><span class="t">${formatTime(x.a)}–${x.b?formatTime(x.b):'Dismissal'}</span><span>${x.name}</span></li>`}).join('')+'</ol>';
- $('out').innerHTML=html;
-}
 render();setInterval(()=>{if(!override)render()},15000);
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').then(()=>navigator.serviceWorker.ready).then(()=>{$('offlineStatus').textContent='Offline copy is ready. You can test it in Airplane Mode.'}).catch(()=>{$('offlineStatus').textContent='Offline caching could not be enabled in this browser.'}))}
 </script>
