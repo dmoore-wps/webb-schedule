@@ -25,7 +25,17 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-of
 .tm{display:flex;gap:9px;align-items:center;font:14px system-ui,sans-serif;color:var(--mut);margin:16px 0;flex-wrap:wrap}.tm input{font:15px system-ui,sans-serif;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg)}.tm button{border-radius:8px;padding:7px 10px}
 ol{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}li{display:flex;gap:11px;padding:10px 12px;border-bottom:1px solid var(--line);font:14px/1.35 system-ui,sans-serif;align-items:center;min-height:42px}li:last-child{border:0}li i{width:9px;align-self:stretch;border-radius:3px;flex:none}li .t{width:104px;flex:none;color:var(--mut);font-variant-numeric:tabular-nums}li.cur{background:color-mix(in srgb,var(--acc) 13%,var(--card));font-weight:700}li.past{opacity:.48}
 .groups{display:grid;grid-template-columns:1fr;gap:12px}.group-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--card);min-width:0}.group-card h2{font:700 16px system-ui,sans-serif;margin:0 0 3px}.group-card .teacher{font:13px system-ui,sans-serif;color:var(--mut);margin-bottom:10px}.group-card .now{margin-bottom:8px}.group-card ol{border-radius:9px}.group-card li{padding:8px 9px;font-size:13px}.group-card li .t{width:96px}
-.foot{font:12px/1.45 system-ui,sans-serif;color:var(--mut);margin-top:15px}.status{font:12px system-ui,sans-serif;color:var(--mut);margin-top:12px}.hidden{display:none!important}
+.all-grid{display:grid;grid-template-columns:1fr;gap:9px;margin-bottom:12px}
+.all-card{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:11px 12px;min-width:0}
+.all-card h2{font:700 15px system-ui,sans-serif;margin:0 0 6px}
+.all-current{font:600 15px/1.3 system-ui,sans-serif}
+.all-meta{font:12px/1.35 system-ui,sans-serif;color:var(--mut);margin-top:4px}
+.all-group{border-top:1px solid var(--line);padding-top:8px;margin-top:8px}
+.all-group:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.all-group b{font:600 12px system-ui,sans-serif;color:var(--mut);display:block;margin-bottom:3px}
+.all-current i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px}
+@media(min-width:620px){.all-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+   .foot{font:12px/1.45 system-ui,sans-serif;color:var(--mut);margin-top:15px}.status{font:12px system-ui,sans-serif;color:var(--mut);margin-top:12px}.hidden{display:none!important}
 @media(min-width:620px){.groups{grid-template-columns:repeat(2,minmax(0,1fr))}.group-card:last-child:nth-child(odd){grid-column:1/-1}}
 </style>
 </head>
@@ -138,7 +148,7 @@ try{building=localStorage.getItem('wieBuilding')||'Webb'}catch(e){}
 if(!S[building])building='Webb';
 function getGrades(){return Object.keys(S[building])}
 try{grade=localStorage.getItem('wieGrade_'+building)}catch(e){}
-if(!getGrades().includes(grade))grade=building==='Webb'?'Kindergarten':'Kindergarten';
+if(grade!=='All'&&!getGrades().includes(grade))grade='Kindergarten';
 
 function makeButtons(container,items,selected,onSelect){
  container.innerHTML=items.map(item=>`<button type="button" data-value="${item}" aria-pressed="${String(item===selected)}">${item}</button>`).join('');
@@ -170,16 +180,51 @@ function renderSchedule(rows,displayName,mins,weekend,compact=false){
  html+='<ol>'+rows.map(x=>{const active=!weekend&&currentItems.includes(x),past=!weekend&&x.b!=null&&x.b<=mins;return `<li class="${active?'cur':past?'past':''}"><i style="background:var(${COLORS[x.color]||'--oth'})"></i><span class="t">${formatTime(x.a)}–${x.b?formatTime(x.b):'Dismissal'}</span><span>${x.name}</span></li>`}).join('')+'</ol>';
  return html;
 }
+   function renderAll(mins,weekend){
+ const cards=[];
+ for(const [g,item] of Object.entries(S[building])){
+  const groups=Array.isArray(item)?[{title:'',teacher:'',rows:item}]:item.groups;
+  let body='';
+  for(const group of groups){
+   const active=group.rows.filter(x=>mins>=x.a&&(x.b==null||mins<x.b));
+   const first=group.rows[0],end=group.rows.reduce((m,x)=>Math.max(m,x.b||0),0);
+   let label='',meta='';
+   if(weekend){
+    label='No weekday schedule';
+    meta='Weekend';
+   }else if(active.length){
+    label=active.map(x=>x.name).join(' + ');
+    meta=active.map(x=>formatTime(x.a)+'–'+(x.b?formatTime(x.b):'Dismissal')).join(' · ');
+   }else if(mins<first.a){
+    label='Not started yet';
+    meta='Starts '+formatTime(first.a);
+   }else if(mins>=end){
+    label='School day is over';
+   }else{
+    label='Between scheduled blocks';
+   }
+   const title=group.teacher?`<b>${group.title} · ${group.teacher}</b>`:'';
+   const color=active.length?(COLORS[active[0].color]||'--oth'):'--line';
+   body+=`<div class="all-group">${title}<div class="all-current"><i style="background:var(${color})"></i>${label}</div>${meta?`<div class="all-meta">${meta}</div>`:''}${active.map(x=>x.note?`<div class="all-meta">${x.note}</div>`:'').join('')}</div>`;
+  }
+  cards.push(`<section class="all-card"><h2>${g}</h2>${body}</section>`);
+ }
+ return `<div class="all-grid">${cards.join('')}</div>`;
+}
 function render(){
  const now=new Date(),mins=override?(()=>{const [h,m]=override.split(':').map(Number);return h*60+m})():now.getHours()*60+now.getMinutes(),day=now.getDay(),weekend=!override&&(day===0||day===6);
  $('clock').textContent=(override?'Checking ':'')+formatTime(mins)+(mins>=720?' PM':' AM')+(override?'':' · '+now.toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'}));
  makeButtons($('buildings'),['Webb','EW'],building,setBuilding);
- makeButtons($('chips'),getGrades(),grade,setGrade);
+ makeButtons($('chips'),['All',...getGrades()],grade,setGrade);
+  if(grade==='All'){
+  $('out').innerHTML=renderAll(mins,weekend);
+ }else{
  const item=S[building][grade];
  if(Array.isArray(item)){
   $('out').innerHTML=renderSchedule(item,grade,mins,weekend);
  }else{
   $('out').innerHTML='<div class="groups">'+item.groups.map(group=>`<section class="group-card"><h2>${grade} · ${group.title}</h2><div class="teacher">${group.teacher}</div>${renderSchedule(group.rows,group.teacher,mins,weekend,true)}</section>`).join('')+'</div>';
+ }
  }
  $('sourceNote').textContent=building==='Webb'
  ?'Source: Webb Building Schedule 2026–2027, Instructional Blocks. Weekday schedule only; holidays, closures, and special-day changes are not included. Webb schedule retained from the original app.'
