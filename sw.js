@@ -1,7 +1,7 @@
 
 'use strict';
 
-const CACHE_NAME = 'where-is-everyone-v2';
+const CACHE_NAME = 'where-is-everyone-v3';
 const CACHE_PREFIX = 'where-is-everyone-';
 const APP_SHELL = [
   './',
@@ -19,7 +19,7 @@ self.addEventListener('install', event => {
         const response = await fetch(new Request(path, { cache: 'reload' }));
         if (response.ok) await cache.put(path, response);
       } catch (_) {
-        // Optional files failing should not prevent installation.
+        // Optional files should not prevent installation.
       }
     }));
     await self.skipWaiting();
@@ -49,7 +49,9 @@ self.addEventListener('fetch', event => {
         if (response.ok) await cache.put('./index.html', response.clone());
         return response;
       } catch (_) {
-        return (await cache.match('./index.html')) || (await cache.match('./')) || Response.error();
+        return (await cache.match('./index.html')) ||
+               (await cache.match('./')) ||
+               Response.error();
       }
     }
 
