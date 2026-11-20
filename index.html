@@ -213,6 +213,7 @@ function renderAll(mins,weekend){
  }
  return '<div class="all-grid">'+cards.join('')+'</div>';
 }
+const UA_CLASSES=['Music','P.E.','Art','Media'];
 function renderUAGrade(g,mins,dayType){
  const rows=UA_SCHEDULE[dayType][g]||[];
  if(!rows.length)return '<section class="all-card"><h2>'+g+'</h2><div class="all-current">No UA assignment listed for this day type.</div></section>';
@@ -222,6 +223,19 @@ function renderUAGrade(g,mins,dayType){
  const list=rows.map(x=>'<li class="'+(active.includes(x)?'cur':'')+'"><span class="ua-time">'+x.start+'–'+x.end+'</span><span class="ua-area">'+x.area+'</span><span>'+x.teacher+'</span></li>').join('');
  return '<section class="all-card"><h2>'+g+'</h2><div class="all-current">'+summary+'</div><ul class="ua-list">'+list+'</ul></section>';
 }
+function renderUAClass(area,mins,dayType){
+ const rows=[];
+ for(const g of UA_GRADES){
+  for(const x of (UA_SCHEDULE[dayType][g]||[]))if(x.area===area)rows.push({...x,grade:g});
+ }
+ rows.sort((a,b)=>uaMinutes(a.start)-uaMinutes(b.start)||a.grade.localeCompare(b.grade));
+ if(!rows.length)return '<section class="all-card"><h2>'+area+'</h2><div class="all-current">No '+area+' assignments listed for this day type.</div></section>';
+ const active=rows.filter(x=>mins>=uaMinutes(x.start)&&mins<uaMinutes(x.end));
+ const next=rows.find(x=>uaMinutes(x.start)>mins);
+ let summary=active.length?active.map(x=>x.grade+' — '+x.teacher).join(' · '):next?'Next: '+next.grade+' — '+next.teacher+' at '+next.start:mins<Math.min(...rows.map(x=>uaMinutes(x.start)))?'Not started yet':'School day is over';
+ const list=rows.map(x=>'<li class="'+(active.includes(x)?'cur':'')+'"><span class="ua-time">'+x.start+'–'+x.end+'</span><span class="ua-area">'+x.grade+'</span><span>'+x.teacher+'</span></li>').join('');
+ return '<section class="all-card"><h2>'+area+' · Full-day schedule</h2><div class="all-current">'+summary+'</div><ul class="ua-list">'+list+'</ul></section>';
+}
 function renderUA(mins,now){
  const key=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
  const dayType=UA_CALENDAR[key];
@@ -229,6 +243,7 @@ function renderUA(mins,now){
  if(UA_MINIMUM.has(key))return '<div class="now" style="background:var(--card);color:var(--fg)"><div class="what">Minimum school day</div><div class="when">The typical Unified Arts schedule does not apply. No UA assignment is displayed.</div></div>';
  if(!dayType)return '<div class="now" style="background:var(--card);color:var(--fg)"><div class="what">No Unified Arts schedule listed</div><div class="when">This date is not marked as a regular A/B/C/D instructional day in the 2026–2027 calendar.</div></div>';
  const heading='<div class="now" style="background:var(--ua)"><small>Webb Unified Arts · '+key+'</small><div class="what">'+dayType+' Day</div><div class="when">Music, P.E., Art and Media</div></div>';
+ if(UA_CLASSES.includes(grade))return heading+renderUAClass(grade,mins,dayType);
  const grades=grade==='All'?UA_GRADES:[grade];
  return heading+'<div class="all-grid">'+grades.map(g=>renderUAGrade(g,mins,dayType)).join('')+'</div>';
 }
@@ -239,11 +254,12 @@ function render(){
  $('buildings').previousElementSibling.classList.toggle('hidden',view==='ua');
  $('buildings').classList.toggle('hidden',view==='ua');
  if(view==='ua'){
-  if(!['All',...UA_GRADES].includes(grade))grade='Kindergarten';
-  makeButtons($('chips'),['All',...UA_GRADES],grade,setGrade);
+  if(!['All',...UA_GRADES,...UA_CLASSES].includes(grade))grade='Kindergarten';
+  makeButtons($('chips'),['All',...UA_GRADES,...UA_CLASSES],grade,setGrade);
   $('out').innerHTML=renderUA(mins,now);
   $('sourceNote').textContent='Source: Webb Typical UA Schedule and Webb ABCD Calendar 2026–2027. Minimum school days are intentionally excluded; dates without an A/B/C/D instructional-day entry are not shown as regular UA days.';
  }else{
+  if(grade!=='All'&&!getGrades().includes(grade))grade='Kindergarten';
   makeButtons($('buildings'),['Webb','EW'],building,setBuilding);
   makeButtons($('chips'),['All',...getGrades()],grade,setGrade);
   if(grade==='All')$('out').innerHTML=renderAll(mins,weekend);
