@@ -1,7 +1,7 @@
 
 'use strict';
 
-const CACHE_NAME = 'where-is-everyone-v3';
+const CACHE_NAME = 'where-is-everyone-v4';
 const CACHE_PREFIX = 'where-is-everyone-';
 const APP_SHELL = [
   './',
