@@ -264,7 +264,7 @@ function renderUAClass(area,mins,dayType){
  for(const x of source){
   const a=uaMinutes(x.start),b=uaMinutes(x.end);
   if(a>cursor)blocks.push({start:fmt(cursor),end:fmt(a),label:'Unassigned / transition',kind:'free'});
-  blocks.push({...x,kind:/^\s*(prep|mini prep)\s*$/i.test(x.label)?'prep':/lunch/i.test(x.label)?'lunch':/bus duty|walker|office/i.test(x.label)?'duty':/department meeting|relationship block|supporting|shelving|lenny/i.test(x.label)?'other':'class'});
+  blocks.push({...x,kind:/^\s*(prep|mini prep)\s*$/i.test(x.label)?'prep':/lunch/i.test(x.label)?'lunch':/bus duty|walker|office/i.test(x.label)?'duty':/shelving/i.test(x.label)?'shelving':/department meeting|relationship block|supporting|lenny/i.test(x.label)?'other':'class'});
   cursor=Math.max(cursor,b);
  }
  const active=blocks.filter(x=>mins>=uaMinutes(x.start)&&mins<uaMinutes(x.end));
