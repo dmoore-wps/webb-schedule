@@ -24,7 +24,6 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-of
 .next{font:14px system-ui,sans-serif;color:var(--mut);margin:0 0 13px}.next b{color:var(--fg)}
 .tm{display:flex;gap:9px;align-items:center;font:14px system-ui,sans-serif;color:var(--mut);margin:16px 0;flex-wrap:wrap}.tm input{font:15px system-ui,sans-serif;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg)}.tm button{border-radius:8px;padding:7px 10px}
 ol{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}li{display:flex;gap:11px;padding:10px 12px;border-bottom:1px solid var(--line);font:14px/1.35 system-ui,sans-serif;align-items:center;min-height:42px}li:last-child{border:0}li i{width:9px;align-self:stretch;border-radius:3px;flex:none}li .t{width:104px;flex:none;color:var(--mut);font-variant-numeric:tabular-nums}li.cur{background:color-mix(in srgb,var(--acc) 13%,var(--card));font-weight:700}li.past{opacity:.48}
-.groups{display:grid;grid-template-columns:1fr;gap:12px}.group-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--card);min-width:0}.group-card h2{font:700 16px system-ui,sans-serif;margin:0 0 3px}.group-card .teacher{font:13px system-ui,sans-serif;color:var(--mut);margin-bottom:10px}.group-card .now{margin-bottom:8px}.group-card ol{border-radius:9px}.group-card li{padding:8px 9px;font-size:13px}.group-card li .t{width:96px}
 .all-grid{display:grid;grid-template-columns:1fr;gap:9px;margin-bottom:12px}
 .all-card{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:11px 12px;min-width:0}
 .all-card h2{font:700 15px system-ui,sans-serif;margin:0 0 6px}
@@ -35,13 +34,20 @@ ol{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius
 .all-group b{font:600 12px system-ui,sans-serif;color:var(--mut);display:block;margin-bottom:3px}
 .all-current i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px}
 @media(min-width:620px){.all-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-   .foot{font:12px/1.45 system-ui,sans-serif;color:var(--mut);margin-top:15px}.status{font:12px system-ui,sans-serif;color:var(--mut);margin-top:12px}.hidden{display:none!important}
+.ua-list{list-style:none;margin:8px 0 0;padding:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
+.ua-list li{display:flex;gap:10px;padding:9px 10px;border-bottom:1px solid var(--line);font:13px/1.35 system-ui,sans-serif;align-items:center}
+.ua-list li:last-child{border:0}.ua-list li.cur{background:color-mix(in srgb,var(--acc) 13%,var(--card));font-weight:700}
+.ua-time{width:104px;flex:none;color:var(--mut);font-variant-numeric:tabular-nums}.ua-area{font-weight:700;min-width:55px}
+.groups{display:grid;grid-template-columns:1fr;gap:12px}.group-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--card);min-width:0}.group-card h2{font:700 16px system-ui,sans-serif;margin:0 0 3px}.group-card .teacher{font:13px system-ui,sans-serif;color:var(--mut);margin-bottom:10px}.group-card .now{margin-bottom:8px}.group-card ol{border-radius:9px}.group-card li{padding:8px 9px;font-size:13px}.group-card li .t{width:96px}
+.foot{font:12px/1.45 system-ui,sans-serif;color:var(--mut);margin-top:15px}.status{font:12px system-ui,sans-serif;color:var(--mut);margin-top:12px}.hidden{display:none!important}
 @media(min-width:620px){.groups{grid-template-columns:repeat(2,minmax(0,1fr))}.group-card:last-child:nth-child(odd){grid-column:1/-1}}
 </style>
 </head>
 <body><main>
 <h1>Where is everyone?</h1>
 <div class="sub" id="clock" aria-live="polite"></div>
+<div class="section-label">View</div>
+<div class="chips" id="views" role="group" aria-label="Choose a schedule view"></div>
 
 <div class="section-label">Building</div>
 <div class="chips" id="buildings" role="group" aria-label="Choose a building"></div>
@@ -142,8 +148,13 @@ const S={Webb:{},EW:{}};
 for(const [g,rows] of Object.entries(WEBB))S.Webb[g]=normalize(rows);
 for(const [g,entry] of Object.entries(EW))S.EW[g]=entry.rows?normalize(entry.rows):{groups:entry.groups.map(gr=>({...gr,rows:normalize(gr.rows)}))};
 
+const UA_SCHEDULE={"A":{"Pre-K":[{"area":"Music","teacher":"Levine","start":"2:05","end":"2:35"},{"area":"P.E.","teacher":"Baressi","start":"2:05","end":"2:35"},{"area":"Media","teacher":"Biestek","start":"2:05","end":"2:35"},{"area":"Music","teacher":"Levine","start":"9:30","end":"10:00"},{"area":"P.E.","teacher":"Barresi","start":"9:30","end":"10:00"},{"area":"Media","teacher":"Biestek","start":"9:30","end":"10:00"}],"Kindergarten":[{"area":"P.E.","teacher":"Dunham","start":"1:20","end":"2:05"},{"area":"Art","teacher":"Ercolani","start":"1:20","end":"2:05"}],"Grade 1":[{"area":"Music","teacher":"Wilson","start":"2:35","end":"3:20"},{"area":"P.E.","teacher":"Maling","start":"2:35","end":"3:20"},{"area":"Media","teacher":"Debin","start":"2:35","end":"3:20"}],"Grade 2":[{"area":"Music","teacher":"Mason","start":"12:35","end":"1:20"},{"area":"P.E.","teacher":"Voskanov","start":"12:35","end":"1:20"}],"Grade 3":[{"area":"Music","teacher":"Macaluso","start":"11:45","end":"12:30"},{"area":"Art","teacher":"DiLauro","start":"11:45","end":"12:30"},{"area":"Media","teacher":"Olson","start":"11:45","end":"12:30"}],"Grade 4":[{"area":"Art","teacher":"Taschner","start":"12:35","end":"1:20"},{"area":"Media","teacher":"Ticino","start":"12:35","end":"1:20"}],"Grade 5":[{"area":"Music","teacher":"Hastings","start":"10:05","end":"10:50"},{"area":"P.E.","teacher":"Morency","start":"10:05","end":"10:50"}],"Grade 6":[{"area":"Music","teacher":"Carlson","start":"10:55","end":"11:40"},{"area":"P.E.","teacher":"Westbrook","start":"10:55","end":"11:40"}]},"B":{"Pre-K":[{"area":"Music","teacher":"Baressi","start":"2:05","end":"2:35"},{"area":"P.E.","teacher":"Biestek","start":"2:05","end":"2:35"},{"area":"Media","teacher":"Levine","start":"2:05","end":"2:35"},{"area":"Music","teacher":"Barresi","start":"9:30","end":"10:00"},{"area":"P.E.","teacher":"Biestek","start":"9:30","end":"10:00"},{"area":"Media","teacher":"Levine","start":"9:30","end":"10:00"}],"Kindergarten":[{"area":"Art","teacher":"Dunham","start":"1:20","end":"2:05"},{"area":"Media","teacher":"Ercolani","start":"1:20","end":"2:05"}],"Grade 1":[{"area":"Music","teacher":"Debin","start":"2:35","end":"3:20"},{"area":"P.E.","teacher":"Wilson","start":"2:35","end":"3:20"},{"area":"Art","teacher":"Maling","start":"2:35","end":"3:20"}],"Grade 2":[{"area":"P.E.","teacher":"Mason","start":"12:35","end":"1:20"},{"area":"Art","teacher":"Voskanov","start":"12:35","end":"1:20"}],"Grade 3":[{"area":"Music","teacher":"Olson","start":"11:45","end":"12:30"},{"area":"P.E.","teacher":"Macaluso","start":"11:45","end":"12:30"},{"area":"Media","teacher":"DiLauro","start":"11:45","end":"12:30"}],"Grade 4":[{"area":"Music","teacher":"Ticino","start":"12:35","end":"1:20"},{"area":"Media","teacher":"Taschner","start":"12:35","end":"1:20"}],"Grade 5":[{"area":"P.E.","teacher":"Hastings","start":"10:05","end":"10:50"},{"area":"Art","teacher":"Morency","start":"10:05","end":"10:50"}],"Grade 6":[{"area":"Music","teacher":"Westbrook","start":"10:55","end":"11:40"},{"area":"Art","teacher":"Carlson","start":"10:55","end":"11:40"}]},"C":{"Pre-K":[{"area":"Music","teacher":"Biestek","start":"2:05","end":"2:35"},{"area":"P.E.","teacher":"Levine","start":"2:05","end":"2:35"},{"area":"Media","teacher":"Barresi","start":"2:05","end":"2:35"},{"area":"Music","teacher":"Biestek","start":"9:30","end":"10:00"},{"area":"P.E.","teacher":"Levine","start":"9:30","end":"10:00"},{"area":"Media","teacher":"Barresi","start":"9:30","end":"10:00"}],"Kindergarten":[{"area":"Music","teacher":"Ercolani","start":"1:20","end":"2:05"},{"area":"Media","teacher":"Dunham","start":"1:20","end":"2:05"}],"Grade 1":[{"area":"P.E.","teacher":"Debin","start":"2:35","end":"3:20"},{"area":"Art","teacher":"Wilson","start":"2:35","end":"3:20"},{"area":"Media","teacher":"Maling","start":"2:35","end":"3:20"}],"Grade 2":[{"area":"Art","teacher":"Mason","start":"12:35","end":"1:20"},{"area":"Media","teacher":"Voskanov","start":"12:35","end":"1:20"}],"Grade 3":[{"area":"Music","teacher":"DiLauro","start":"11:45","end":"12:30"},{"area":"P.E.","teacher":"Olson","start":"11:45","end":"12:30"},{"area":"Art","teacher":"Macaluso","start":"11:45","end":"12:30"}],"Grade 4":[{"area":"Music","teacher":"Taschner","start":"12:35","end":"1:20"},{"area":"P.E.","teacher":"Ticino","start":"12:35","end":"1:20"}],"Grade 5":[{"area":"Music","teacher":"Morency","start":"10:05","end":"10:50"},{"area":"Art","teacher":"Hastings","start":"10:05","end":"10:50"}],"Grade 6":[{"area":"P.E.","teacher":"Carlson","start":"10:55","end":"11:40"},{"area":"Art","teacher":"Westbrook","start":"10:55","end":"11:40"}]},"D":{"Pre-K":[],"Kindergarten":[{"area":"Music","teacher":"Dunham","start":"1:20","end":"2:05"},{"area":"P.E.","teacher":"Ercolani","start":"1:20","end":"2:05"}],"Grade 1":[{"area":"Music","teacher":"Maling","start":"2:35","end":"3:20"},{"area":"Art","teacher":"Debin","start":"2:35","end":"3:20"},{"area":"Media","teacher":"Wilson","start":"2:35","end":"3:20"}],"Grade 2":[{"area":"Music","teacher":"Voskanov","start":"12:35","end":"1:20"},{"area":"Media","teacher":"Mason","start":"12:35","end":"1:20"}],"Grade 3":[{"area":"P.E.","teacher":"DiLauro","start":"11:45","end":"12:30"},{"area":"Art","teacher":"Olson","start":"11:45","end":"12:30"},{"area":"Media","teacher":"Macaluso","start":"11:45","end":"12:30"}],"Grade 4":[{"area":"P.E.","teacher":"Taschner","start":"12:35","end":"1:20"},{"area":"Art","teacher":"Ticino","start":"12:35","end":"1:20"}],"Grade 5":[{"area":"Music","teacher":"Chorus","start":"10:05","end":"10:50"}],"Grade 6":[{"area":"Music","teacher":"Chorus","start":"10:55","end":"11:40"}]}};
+const UA_CALENDAR={"2026-08-27":"A","2026-08-28":"B","2026-08-31":"C","2026-09-01":"D","2026-09-02":"A","2026-09-03":"B","2026-09-04":"C","2026-09-08":"D","2026-09-09":"A","2026-09-10":"B","2026-09-11":"C","2026-09-14":"D","2026-09-15":"A","2026-09-16":"B","2026-09-17":"C","2026-09-18":"D","2026-09-21":"A","2026-09-22":"B","2026-09-23":"C","2026-09-24":"D","2026-09-25":"A","2026-09-28":"B","2026-09-29":"C","2026-09-30":"D","2026-10-01":"A","2026-10-02":"B","2026-10-05":"C","2026-10-06":"D","2026-10-07":"A","2026-10-08":"B","2026-10-09":"C","2026-10-13":"D","2026-10-14":"A","2026-10-15":"B","2026-10-16":"C","2026-10-19":"D","2026-10-20":"A","2026-10-21":"B","2026-10-22":"C","2026-10-23":"D","2026-10-26":"A","2026-10-27":"B","2026-10-28":"C","2026-10-29":"D","2026-10-30":"A","2026-11-02":"B","2026-11-04":"C","2026-11-05":"D","2026-11-06":"A","2026-11-09":"B","2026-11-10":"C","2026-11-11":"D","2026-11-12":"A","2026-11-13":"B","2026-11-16":"C","2026-11-17":"D","2026-11-18":"A","2026-11-19":"B","2026-11-20":"C","2026-11-23":"D","2026-11-24":"A","2026-11-25":"B","2026-11-30":"C","2026-12-01":"D","2026-12-02":"A","2026-12-03":"B","2026-12-04":"C","2026-12-07":"D","2026-12-08":"A","2026-12-09":"B","2026-12-10":"C","2026-12-11":"D","2026-12-14":"A","2026-12-15":"B","2026-12-16":"C","2026-12-17":"D","2026-12-18":"A","2026-12-21":"B","2026-12-22":"C","2026-12-23":"D","2027-01-04":"A","2027-01-05":"B","2027-01-06":"C","2027-01-07":"D","2027-01-08":"A","2027-01-11":"B","2027-01-12":"C","2027-01-13":"D","2027-01-14":"A","2027-01-15":"B","2027-01-19":"C","2027-01-20":"D","2027-01-21":"A","2027-01-22":"B","2027-01-25":"C","2027-01-26":"D","2027-01-27":"A","2027-01-28":"B","2027-01-29":"C","2027-02-01":"D","2027-02-02":"A","2027-02-03":"B","2027-02-04":"C","2027-02-05":"D","2027-02-08":"A","2027-02-09":"B","2027-02-10":"C","2027-02-11":"D","2027-02-17":"A","2027-02-18":"B","2027-02-19":"C","2027-02-22":"D","2027-02-23":"A","2027-02-24":"B","2027-02-25":"C","2027-02-26":"D","2027-03-01":"A","2027-03-02":"B","2027-03-03":"C","2027-03-04":"D","2027-03-05":"A","2027-03-08":"B","2027-03-09":"C","2027-03-11":"D","2027-03-12":"A","2027-03-15":"B","2027-03-16":"C","2027-03-17":"D","2027-03-18":"A","2027-03-19":"B","2027-03-22":"C","2027-03-23":"D","2027-03-24":"A","2027-03-25":"B","2027-03-29":"C","2027-03-30":"D","2027-03-31":"A","2027-04-01":"B","2027-04-02":"C","2027-04-05":"D","2027-04-06":"A","2027-04-07":"B","2027-04-08":"C","2027-04-09":"D","2027-04-19":"A","2027-04-20":"B","2027-04-21":"C","2027-04-22":"D","2027-04-23":"A","2027-04-26":"B","2027-04-27":"C","2027-04-28":"D","2027-04-29":"A","2027-04-30":"B","2027-05-03":"C","2027-05-04":"D","2027-05-05":"A","2027-05-06":"B","2027-05-07":"C","2027-05-10":"D","2027-05-11":"A","2027-05-12":"B","2027-05-13":"C","2027-05-14":"D","2027-05-17":"A","2027-05-18":"B","2027-05-19":"C","2027-05-20":"D","2027-05-21":"A","2027-05-24":"B","2027-05-25":"C","2027-05-26":"D","2027-05-27":"A","2027-05-28":"B","2027-06-01":"C","2027-06-02":"D","2027-06-03":"A","2027-06-04":"B","2027-06-07":"C","2027-06-08":"D","2027-06-09":"A","2027-06-10":"B","2027-06-11":"C","2027-06-14":"D","2027-06-15":"A","2027-06-16":"B","2027-06-17":"C","2027-06-18":"D","2027-06-21":"A","2027-06-22":"B","2027-06-23":"C","2027-06-24":"D","2027-06-25":"A","2027-06-28":"B","2027-06-29":"C","2027-06-30":"D"};
+const UA_MINIMUM=new Set(["2026-10-07","2026-10-20","2026-10-21","2026-10-22","2026-12-02","2027-01-06","2027-03-03","2027-03-16","2027-03-17","2027-03-18","2027-04-07","2027-05-05","2027-05-28"]);
+const UA_GRADES=['Pre-K','Kindergarten','Grade 1','Grade 2','Grade 3','Grade 4','Grade 5','Grade 6'];
+const uaMinutes=v=>{let [h,m]=v.split(':').map(Number);if(h<8)h+=12;return h*60+m};
 const $=id=>document.getElementById(id);
-let building='Webb',grade=null,override=null;
+let building='Webb',grade=null,override=null,view='classroom';
 try{building=localStorage.getItem('wieBuilding')||'Webb'}catch(e){}
 if(!S[building])building='Webb';
 function getGrades(){return Object.keys(S[building])}
@@ -154,6 +165,7 @@ function makeButtons(container,items,selected,onSelect){
  container.innerHTML=items.map(item=>`<button type="button" data-value="${item}" aria-pressed="${String(item===selected)}">${item}</button>`).join('');
  container.onclick=e=>{const b=e.target.closest('button[data-value]');if(b)onSelect(b.dataset.value)};
 }
+function setView(value){view=value;render()}
 function setBuilding(value){
  building=value;grade=getGrades()[0];
  try{localStorage.setItem('wieBuilding',building);localStorage.setItem('wieGrade_'+building,grade)}catch(e){}
@@ -180,7 +192,7 @@ function renderSchedule(rows,displayName,mins,weekend,compact=false){
  html+='<ol>'+rows.map(x=>{const active=!weekend&&currentItems.includes(x),past=!weekend&&x.b!=null&&x.b<=mins;return `<li class="${active?'cur':past?'past':''}"><i style="background:var(${COLORS[x.color]||'--oth'})"></i><span class="t">${formatTime(x.a)}–${x.b?formatTime(x.b):'Dismissal'}</span><span>${x.name}</span></li>`}).join('')+'</ol>';
  return html;
 }
-   function renderAll(mins,weekend){
+function renderAll(mins,weekend){
  const cards=[];
  for(const [g,item] of Object.entries(S[building])){
   const groups=Array.isArray(item)?[{title:'',teacher:'',rows:item}]:item.groups;
@@ -189,46 +201,61 @@ function renderSchedule(rows,displayName,mins,weekend,compact=false){
    const active=group.rows.filter(x=>mins>=x.a&&(x.b==null||mins<x.b));
    const first=group.rows[0],end=group.rows.reduce((m,x)=>Math.max(m,x.b||0),0);
    let label='',meta='';
-   if(weekend){
-    label='No weekday schedule';
-    meta='Weekend';
-   }else if(active.length){
-    label=active.map(x=>x.name).join(' + ');
-    meta=active.map(x=>formatTime(x.a)+'–'+(x.b?formatTime(x.b):'Dismissal')).join(' · ');
-   }else if(mins<first.a){
-    label='Not started yet';
-    meta='Starts '+formatTime(first.a);
-   }else if(mins>=end){
-    label='School day is over';
-   }else{
-    label='Between scheduled blocks';
-   }
-   const title=group.teacher?`<b>${group.title} · ${group.teacher}</b>`:'';
+   if(weekend){label='No weekday schedule';meta='Weekend'}
+   else if(active.length){label=active.map(x=>x.name).join(' + ');meta=active.map(x=>formatTime(x.a)+'–'+(x.b?formatTime(x.b):'Dismissal')).join(' · ')}
+   else if(mins<first.a){label='Not started yet';meta='Starts '+formatTime(first.a)}
+   else if(mins>=end)label='School day is over';else label='Between scheduled blocks';
+   const title=group.teacher?'<b>'+group.title+' · '+group.teacher+'</b>':'';
    const color=active.length?(COLORS[active[0].color]||'--oth'):'--line';
-   body+=`<div class="all-group">${title}<div class="all-current"><i style="background:var(${color})"></i>${label}</div>${meta?`<div class="all-meta">${meta}</div>`:''}${active.map(x=>x.note?`<div class="all-meta">${x.note}</div>`:'').join('')}</div>`;
+   body+='<div class="all-group">'+title+'<div class="all-current"><i style="background:var('+color+')"></i>'+label+'</div>'+(meta?'<div class="all-meta">'+meta+'</div>':'')+active.map(x=>x.note?'<div class="all-meta">'+x.note+'</div>':'').join('')+'</div>';
   }
-  cards.push(`<section class="all-card"><h2>${g}</h2>${body}</section>`);
+  cards.push('<section class="all-card"><h2>'+g+'</h2>'+body+'</section>');
  }
- return `<div class="all-grid">${cards.join('')}</div>`;
+ return '<div class="all-grid">'+cards.join('')+'</div>';
+}
+function renderUAGrade(g,mins,dayType){
+ const rows=UA_SCHEDULE[dayType][g]||[];
+ if(!rows.length)return '<section class="all-card"><h2>'+g+'</h2><div class="all-current">No UA assignment listed for this day type.</div></section>';
+ const active=rows.filter(x=>mins>=uaMinutes(x.start)&&mins<uaMinutes(x.end));
+ const next=rows.filter(x=>uaMinutes(x.start)>mins).sort((a,b)=>uaMinutes(a.start)-uaMinutes(b.start))[0];
+ let summary=active.length?active.map(x=>x.area+' — '+x.teacher).join(' · '):next?'Next: '+next.area+' — '+next.teacher+' at '+next.start:mins<Math.min(...rows.map(x=>uaMinutes(x.start)))?'Not started yet':'School day is over';
+ const list=rows.map(x=>'<li class="'+(active.includes(x)?'cur':'')+'"><span class="ua-time">'+x.start+'–'+x.end+'</span><span class="ua-area">'+x.area+'</span><span>'+x.teacher+'</span></li>').join('');
+ return '<section class="all-card"><h2>'+g+'</h2><div class="all-current">'+summary+'</div><ul class="ua-list">'+list+'</ul></section>';
+}
+function renderUA(mins,now){
+ const key=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+ const dayType=UA_CALENDAR[key];
+ if(now.getDay()===0||now.getDay()===6)return '<div class="now" style="background:var(--card);color:var(--fg)"><div class="what">No school-day UA schedule</div><div class="when">Weekend</div></div>';
+ if(UA_MINIMUM.has(key))return '<div class="now" style="background:var(--card);color:var(--fg)"><div class="what">Minimum school day</div><div class="when">The typical Unified Arts schedule does not apply. No UA assignment is displayed.</div></div>';
+ if(!dayType)return '<div class="now" style="background:var(--card);color:var(--fg)"><div class="what">No Unified Arts schedule listed</div><div class="when">This date is not marked as a regular A/B/C/D instructional day in the 2026–2027 calendar.</div></div>';
+ const heading='<div class="now" style="background:var(--ua)"><small>Webb Unified Arts · '+key+'</small><div class="what">'+dayType+' Day</div><div class="when">Music, P.E., Art and Media</div></div>';
+ const grades=grade==='All'?UA_GRADES:[grade];
+ return heading+'<div class="all-grid">'+grades.map(g=>renderUAGrade(g,mins,dayType)).join('')+'</div>';
 }
 function render(){
  const now=new Date(),mins=override?(()=>{const [h,m]=override.split(':').map(Number);return h*60+m})():now.getHours()*60+now.getMinutes(),day=now.getDay(),weekend=!override&&(day===0||day===6);
  $('clock').textContent=(override?'Checking ':'')+formatTime(mins)+(mins>=720?' PM':' AM')+(override?'':' · '+now.toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'}));
- makeButtons($('buildings'),['Webb','EW'],building,setBuilding);
- makeButtons($('chips'),['All',...getGrades()],grade,setGrade);
-  if(grade==='All'){
-  $('out').innerHTML=renderAll(mins,weekend);
+ makeButtons($('views'),['Classroom','Unified Arts'],view==='classroom'?'Classroom':'Unified Arts',v=>setView(v==='Classroom'?'classroom':'ua'));
+ $('buildings').previousElementSibling.classList.toggle('hidden',view==='ua');
+ $('buildings').classList.toggle('hidden',view==='ua');
+ if(view==='ua'){
+  if(!['All',...UA_GRADES].includes(grade))grade='Kindergarten';
+  makeButtons($('chips'),['All',...UA_GRADES],grade,setGrade);
+  $('out').innerHTML=renderUA(mins,now);
+  $('sourceNote').textContent='Source: Webb Typical UA Schedule and Webb ABCD Calendar 2026–2027. Minimum school days are intentionally excluded; dates without an A/B/C/D instructional-day entry are not shown as regular UA days.';
  }else{
- const item=S[building][grade];
- if(Array.isArray(item)){
-  $('out').innerHTML=renderSchedule(item,grade,mins,weekend);
- }else{
-  $('out').innerHTML='<div class="groups">'+item.groups.map(group=>`<section class="group-card"><h2>${grade} · ${group.title}</h2><div class="teacher">${group.teacher}</div>${renderSchedule(group.rows,group.teacher,mins,weekend,true)}</section>`).join('')+'</div>';
+  makeButtons($('buildings'),['Webb','EW'],building,setBuilding);
+  makeButtons($('chips'),['All',...getGrades()],grade,setGrade);
+  if(grade==='All')$('out').innerHTML=renderAll(mins,weekend);
+  else{
+   const item=S[building][grade];
+   if(Array.isArray(item))$('out').innerHTML=renderSchedule(item,grade,mins,weekend);
+   else $('out').innerHTML='<div class="groups">'+item.groups.map(group=>`<section class="group-card"><h2>${grade} · ${group.title}</h2><div class="teacher">${group.teacher}</div>${renderSchedule(group.rows,group.teacher,mins,weekend,true)}</section>`).join('')+'</div>';
+  }
+  $('sourceNote').textContent=building==='Webb'
+  ?'Source: Webb Building Schedule 2026–2027, Instructional Blocks. Weekday schedule only; holidays, closures, and special-day changes are not included. Webb schedule retained from the original app.'
+  :'Source: EW Grade Level Schedules 2026–2027 and the additional Grade 4 column supplied in chat. Weekday schedule only; holidays, closures, and special-day changes are not included. Grade 5/6 cards show the three teacher groups and their rotation assignments from the source; unspecified periods are not inferred. The Grade 2 source lists ELA TSG continued (12:40–1:55) and Math (12:55–1:55) as overlapping; both are shown as written.';
  }
- }
- $('sourceNote').textContent=building==='Webb'
- ?'Source: Webb Building Schedule 2026–2027, Instructional Blocks. Weekday schedule only; holidays, closures, and special-day changes are not included. Webb schedule retained from the original app.'
- :'Source: EW Grade Level Schedules 2026–2027 and the additional Grade 4 column supplied in chat. Weekday schedule only; holidays, closures, and special-day changes are not included. Grade 5/6 cards show the three teacher groups and their rotation assignments from the source; unspecified periods are not inferred. The Grade 2 source lists ELA TSG continued (12:40–1:55) and Math (12:55–1:55) as overlapping; both are shown as written.';
 }
 $('ot').addEventListener('change',e=>{override=e.target.value||null;render()});
 $('rs').addEventListener('click',()=>{override=null;$('ot').value='';render()});
