@@ -38,6 +38,37 @@ ol{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius
 .ua-list li{display:flex;gap:10px;padding:9px 10px;border-bottom:1px solid var(--line);font:13px/1.35 system-ui,sans-serif;align-items:center}
 .ua-list li:last-child{border:0}.ua-list li.cur{background:color-mix(in srgb,var(--acc) 13%,var(--card));font-weight:700}
 .ua-time{width:104px;flex:none;color:var(--mut);font-variant-numeric:tabular-nums}.ua-area{font-weight:700;min-width:55px}.ua-free{opacity:.68}.ua-prep .ua-area{color:var(--acc)}.ua-duty .ua-area{font-weight:800}.ua-free{opacity:.68}.ua-prep .ua-area{color:var(--acc)}.ua-duty .ua-area{font-weight:800}.ua-free{opacity:.68}.ua-prep .ua-area{color:var(--acc)}.ua-duty .ua-area{font-weight:800}.ua-free{opacity:.68}.ua-prep .ua-area{color:var(--acc)}.ua-duty .ua-area{font-weight:800}
+
+/* Unified Arts: highlight non-classroom activities */
+
+.ua-list li.ua-free {
+  background: #fff3cd;
+  opacity: 1;
+}
+
+.ua-list li.ua-prep {
+  background: #dbeafe;
+}
+
+.ua-list li.ua-lunch {
+  background: #dcfce7;
+}
+
+.ua-list li.ua-other:has(.ua-area) {
+  /* Other activities retain their existing appearance */
+}
+
+/* Highlight Shelving specifically */
+.ua-list li:has(.ua-area) {
+  border-left: 3px solid transparent;
+}
+
+.ua-list li:has(.ua-area) .ua-area {
+  font-weight: 700;
+}
+.ua-list li.ua-shelving {
+  background: #f3e8ff;
+}   
 .groups{display:grid;grid-template-columns:1fr;gap:12px}.group-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--card);min-width:0}.group-card h2{font:700 16px system-ui,sans-serif;margin:0 0 3px}.group-card .teacher{font:13px system-ui,sans-serif;color:var(--mut);margin-bottom:10px}.group-card .now{margin-bottom:8px}.group-card ol{border-radius:9px}.group-card li{padding:8px 9px;font-size:13px}.group-card li .t{width:96px}
 .foot{font:12px/1.45 system-ui,sans-serif;color:var(--mut);margin-top:15px}.status{font:12px system-ui,sans-serif;color:var(--mut);margin-top:12px}.hidden{display:none!important}
 @media(min-width:620px){.groups{grid-template-columns:repeat(2,minmax(0,1fr))}.group-card:last-child:nth-child(odd){grid-column:1/-1}}
